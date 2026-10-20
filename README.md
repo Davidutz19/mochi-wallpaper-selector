@@ -5,6 +5,8 @@ island: a strip of your wallpapers with the selected one big in the middle.
 
 ![The picker on the island](docs/preview.webp)
 
+[The same in full quality, as a video](docs/preview.mp4)
+
 It sets the wallpaper with the daemon that runs (awww, swww, hyprpaper or swaybg)
 or a command of your own, remembers the last one, and sets it again when Mochi
 starts.
