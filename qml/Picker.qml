@@ -56,6 +56,18 @@ Item {
             selectCurrent();
     }
 
+    // Follows the wallpaper set, from here (Space, R) or from elsewhere.
+    onCurrentChanged: selectCurrent()
+
+    // The view is preloaded and kept, so each opening starts again on the
+    // wallpaper that's set, with the keyboard.
+    onVisibleChanged: {
+        if (!visible)
+            return;
+        selectCurrent();
+        Qt.callLater(() => root.forceActiveFocus());
+    }
+
     Component.onCompleted: {
         selectCurrent();
         Qt.callLater(() => root.forceActiveFocus());

@@ -163,6 +163,8 @@ impl Selector {
 
     fn open(&mut self, ctx: &ModuleCtx) {
         self.rescan();
+        // An error from before is old news once the picker opens again.
+        self.error = None;
         self.publish(ctx);
         let mut spec = ActivitySpec::new("Picker")
             .key("picker")
