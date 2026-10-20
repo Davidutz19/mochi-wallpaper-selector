@@ -1,11 +1,11 @@
-# A wallpaper picker on the island. `mochi ipc wallpaper toggle` opens it: a strip
+# A wallpaper picker on the island. `mochi ipc wallpaper-selector toggle` opens it: a strip
 # of the wallpapers with the selected one big in the middle, picked with the arrows
 # or the mouse. It sets the wallpaper with whichever daemon runs (awww,
 # swww, hyprpaper, swaybg, or a command of your own), and sets the last one
 # again when Mochi starts.
 
 [plugin]
-id = "wallpaper"
+id = "wallpaper-selector"
 name = "Wallpaper selector"
 version = "0.1.0"
 description = "Pick a wallpaper on the island, for awww, swww, hyprpaper, swaybg or any command"
@@ -14,11 +14,11 @@ homepage = "https://github.com/DavidutzDev/mochi-wallpaper-selector"
 api = 1
 
 [backend]
-exec = "bin/wallpaper"
-build = "cargo build --release --locked --target-dir target && install -Dm755 target/release/wallpaper bin/wallpaper"
+exec = "bin/wallpaper-selector"
+build = "cargo build --release --locked --target-dir target && install -Dm755 target/release/wallpaper-selector bin/wallpaper-selector"
 
 [release]
-asset = "wallpaper-{version}-{arch}-linux.tar.gz"
+asset = "wallpaper-selector-{version}-{arch}-linux.tar.gz"
 
 [[actions]]
 name = "toggle"

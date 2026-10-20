@@ -16,14 +16,14 @@ It needs Mochi 0.4.1 or newer, and a wallpaper daemon, or a command that sets on
 From Bento, Mochi's registry:
 
 ```sh
-mochi bento add wallpaper
+mochi bento add wallpaper-selector
 ```
 
 Or from this repository, in `~/.config/mochi/plugins.toml`, then
-`mochi plugins install wallpaper`:
+`mochi plugins install wallpaper-selector`:
 
 ```toml
-[plugins.wallpaper]
+[plugins.wallpaper-selector]
 source = "git-release:github.com/DavidutzDev/mochi-wallpaper-selector"
 ```
 
@@ -43,28 +43,28 @@ inputs.mochi-wallpaper-selector = {
 
 # home-manager
 programs.mochi = {
-  plugins.wallpaper.src = inputs.mochi-wallpaper-selector;
-  settings.modules = [ "wallpaper" ];
-  settings.module.wallpaper.daemon = "awww";
+  plugins.wallpaper-selector.src = inputs.mochi-wallpaper-selector;
+  settings.modules = [ "wallpaper-selector" ];
+  settings.module.wallpaper-selector.daemon = "awww";
 };
 ```
 
 The repository is a flake too: `nix build github:DavidutzDev/mochi-wallpaper-selector`
 builds the plugin, and its `packages.<system>.default` goes in
-`programs.mochi.plugins.wallpaper.package`.
+`programs.mochi.plugins.wallpaper-selector.package`.
 
 ### Then
 
-Add `"wallpaper"` to `modules` in `config.toml`, unless Bento or home-manager did,
-and bind a key to open the picker:
+Add `"wallpaper-selector"` to `modules` in `config.toml`, unless Bento or
+home-manager did, and bind a key to open the picker:
 
 ```sh
-mochi ipc wallpaper toggle
+mochi ipc wallpaper-selector toggle
 ```
 
 ```lua
 -- Hyprland
-hl.bind("SUPER + CTRL + W", hl.dsp.exec_cmd("mochi ipc wallpaper toggle"))
+hl.bind("SUPER + CTRL + W", hl.dsp.exec_cmd("mochi ipc wallpaper-selector toggle"))
 ```
 
 ## Keys
@@ -82,8 +82,8 @@ the wheel moves along.
 
 ## Settings
 
-In the `[module.wallpaper]` section of `config.toml`, or on the plugin's page in
-Mochi's settings. `settings.toml` lists them, commented at their defaults:
+In the `[module.wallpaper-selector]` section of `config.toml`, or on the plugin's
+page in Mochi's settings. `settings.toml` lists them, commented at their defaults:
 
 | Setting | Default | |
 |---|---|---|
@@ -95,12 +95,12 @@ Mochi's settings. `settings.toml` lists them, commented at their defaults:
 | `restore` | `true` | Set the last wallpaper again when Mochi starts |
 | `default` | `""` | The wallpaper to set when none was picked yet: a path or a file name in the directory |
 
-The last wallpaper is saved in `$XDG_STATE_HOME/mochi-wallpaper/current`
-(`~/.local/state/mochi-wallpaper/current`).
+The last wallpaper is saved in `$XDG_STATE_HOME/mochi-wallpaper-selector/current`
+(`~/.local/state/mochi-wallpaper-selector/current`).
 
 ## Actions
 
-`mochi ipc wallpaper <action>`, for keys and scripts:
+`mochi ipc wallpaper-selector <action>`, for keys and scripts:
 
 | Action | Does |
 |---|---|
@@ -119,8 +119,8 @@ cargo clippy --all-targets -- -D warnings
 ```
 
 To try changes, list the plugin with a `path:` source in `plugins.toml` and run
-`mochi plugins install wallpaper`. `mochi reload` restarts the backend after a
-rebuild; QML changes to an installed copy need `systemctl --user restart mochid`.
+`mochi plugins install wallpaper-selector`. `mochi reload` restarts the backend
+after a rebuild; QML changes to an installed copy need `systemctl --user restart mochid`.
 
 Pushing a tag like `v0.2.0` builds static binaries for x86_64 and aarch64 and
 attaches them to the release (`.github/workflows/release.yml`).

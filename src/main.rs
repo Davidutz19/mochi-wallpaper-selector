@@ -157,7 +157,7 @@ impl Selector {
                     .collect();
                 command.answer(Ok(lines.join("\n")));
             }
-            other => command.reply(Err(format!("wallpaper has no action {other}"))),
+            other => command.reply(Err(format!("wallpaper-selector has no action {other}"))),
         }
     }
 
@@ -295,14 +295,14 @@ fn random_other(count: usize, current: Option<usize>) -> usize {
     }
 }
 
-/// Where the wallpaper set last is saved: `$XDG_STATE_HOME/mochi-wallpaper`.
+/// Where the wallpaper set last is saved: `$XDG_STATE_HOME/mochi-wallpaper-selector`.
 fn state_file() -> Option<PathBuf> {
     let base = std::env::var_os("XDG_STATE_HOME")
         .map(PathBuf::from)
         .or_else(|| {
             std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/state"))
         })?;
-    Some(base.join("mochi-wallpaper").join("current"))
+    Some(base.join("mochi-wallpaper-selector").join("current"))
 }
 
 fn saved() -> Option<PathBuf> {
@@ -321,7 +321,7 @@ fn save(path: &Path) {
         .and_then(|()| std::fs::write(&file, format!("{}\n", path.display())));
     if let Err(error) = written {
         eprintln!(
-            "wallpaper: can't save the wallpaper to {}: {error}",
+            "wallpaper-selector: can't save the wallpaper to {}: {error}",
             file.display()
         );
     }

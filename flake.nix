@@ -2,8 +2,8 @@
 #
 # - `mochi plugins install` uses it when Nix is installed.
 # - home-manager takes the package as
-#   `programs.mochi.plugins.wallpaper.package = inputs.mochi-wallpaper-selector.packages.${pkgs.system}.default;`
-#   or builds the source itself with `programs.mochi.plugins.wallpaper.src`.
+#   `programs.mochi.plugins.wallpaper-selector.package = inputs.mochi-wallpaper-selector.packages.${pkgs.system}.default;`
+#   or builds the source itself with `programs.mochi.plugins.wallpaper-selector.src`.
 {
   description = "A Mochi plugin: pick a wallpaper on the island";
 

@@ -11,7 +11,7 @@ Item {
 
     property var payload: ({})
 
-    readonly property var state: Daemon.state("wallpaper")
+    readonly property var state: Daemon.state("wallpaper-selector")
     readonly property var wallpapers: state?.wallpapers ?? []
     readonly property string current: state?.current ?? ""
     readonly property string error: state?.error ?? ""
@@ -44,7 +44,7 @@ Item {
     function apply(): void {
         if (!selected)
             return;
-        Daemon.command("wallpaper", "set", [selected.path]);
+        Daemon.command("wallpaper-selector", "set", [selected.path]);
         Daemon.event("dismiss");
     }
 
@@ -85,7 +85,7 @@ Item {
         else if (event.key === Qt.Key_End)
             move(wallpapers.length);
         else if (event.key === Qt.Key_R)
-            Daemon.command("wallpaper", "random", []);
+            Daemon.command("wallpaper-selector", "random", []);
         else
             return;
         event.accepted = true;
@@ -116,7 +116,7 @@ Item {
             IconButton {
                 anchors.verticalCenter: parent.verticalCenter
                 icon: "shuffle"
-                onClicked: Daemon.command("wallpaper", "random", [])
+                onClicked: Daemon.command("wallpaper-selector", "random", [])
             }
         }
 

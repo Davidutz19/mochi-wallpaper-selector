@@ -1,5 +1,5 @@
 # Wallpaper selector: pick a wallpaper on the island.
-[module.wallpaper]
+[module.wallpaper-selector]
 # The folder of wallpapers. `~` is the home directory.
 # directory = "~/Pictures/Wallpapers"
 # Look in its subfolders too.
