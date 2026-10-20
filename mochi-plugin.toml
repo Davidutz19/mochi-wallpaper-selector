@@ -1,0 +1,74 @@
+# A wallpaper picker on the island. `mochi ipc wallpaper toggle` opens it: a big
+# preview of the selected wallpaper and a strip of the others, picked with the
+# arrows or the mouse. It sets the wallpaper with whichever daemon runs (awww,
+# swww, hyprpaper, swaybg, or a command of your own), and sets the last one
+# again when Mochi starts.
+
+[plugin]
+id = "wallpaper"
+name = "Wallpaper selector"
+version = "0.1.0"
+description = "Pick a wallpaper on the island, for awww, swww, hyprpaper, swaybg or any command"
+authors = ["David Gheghea"]
+homepage = "https://github.com/DavidutzDev/mochi-wallpaper-selector"
+api = 1
+
+[backend]
+exec = "bin/wallpaper"
+build = "cargo build --release --locked --target-dir target && install -Dm755 target/release/wallpaper bin/wallpaper"
+
+[release]
+asset = "wallpaper-{version}-{arch}-linux.tar.gz"
+
+[[actions]]
+name = "toggle"
+description = "Open the picker, or close it when open"
+
+[[actions]]
+name = "open"
+description = "Open the picker"
+
+[[actions]]
+name = "close"
+description = "Close the picker"
+
+[[actions]]
+name = "set"
+description = "Set a wallpaper: a path, or a file name in the directory"
+args = [{ name = "path", description = "The image", rest = true }]
+
+[[actions]]
+name = "next"
+description = "Set the next wallpaper in the directory"
+
+[[actions]]
+name = "previous"
+description = "Set the previous wallpaper in the directory"
+
+[[actions]]
+name = "random"
+description = "Set a random wallpaper from the directory"
+
+[[actions]]
+name = "restore"
+description = "Set the last wallpaper again, or the default"
+
+[[actions]]
+name = "current"
+description = "Print the wallpaper set last"
+
+[[actions]]
+name = "list"
+description = "Print the wallpapers in the directory"
+
+# The picker opens at once the first time too.
+[[contributions]]
+target = "mochi"
+kind = "preload"
+id = "picker"
+view = "Picker"
+title = "Wallpapers"
+icon = "wallpaper"
+
+[settings.daemon]
+choices = ["auto", "awww", "swww", "hyprpaper", "swaybg", "command"]

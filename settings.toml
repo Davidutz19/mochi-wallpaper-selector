@@ -1,0 +1,19 @@
+# Wallpaper selector: pick a wallpaper on the island.
+[module.wallpaper]
+# The folder of wallpapers. `~` is the home directory.
+# directory = "~/Pictures/Wallpapers"
+# Look in its subfolders too.
+# recursive = false
+# What sets the wallpaper: auto picks the daemon that runs, in this order:
+# awww, swww, hyprpaper, swaybg.
+# daemon = "auto"
+# With daemon = "command": a shell command, {path} is the image, quoted.
+# command = ""
+# For awww and swww: the transition, like "grow", "fade" or "wipe". Empty is
+# the daemon's own default.
+# transition = ""
+# Set the last wallpaper again when Mochi starts.
+# restore = true
+# The wallpaper to set when none was picked yet: a path, or a file name in the
+# directory. Empty sets nothing.
+# default = ""
