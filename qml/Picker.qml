@@ -160,6 +160,9 @@ Item {
                 highlightMoveDuration: Theme.reducedMotion ? 0 : 220
                 boundsBehavior: Flickable.StopAtBounds
                 interactive: false
+                // Keeps the thumbnails past the edges alive, so coming back to one
+                // doesn't load it again.
+                cacheBuffer: root.stripWidth * 4
 
                 ScrollFade {
                     view: strip
@@ -191,6 +194,8 @@ Item {
                         width: thumb.width
                         height: thumb.width * 9 / 16
                         path: thumb.modelData.path
+                        // Decoded once at the big size, so growing and shrinking never reload it.
+                        loadSize: Qt.size(root.bigWidth, root.bigHeight)
                         radius: thumb.selected ? Theme.radiusSurface : Theme.radiusControl
                         opacity: thumb.selected ? 1 : area.containsMouse ? 0.85 : 0.55
 
