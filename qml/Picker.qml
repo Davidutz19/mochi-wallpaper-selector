@@ -1,11 +1,11 @@
 import QtQuick
 import qs.island
 
-// The wallpaper picker: a big preview of the selected wallpaper and a strip of
-// all of them. Left and Right (or H and L) move, Home and End jump, Enter sets
-// the wallpaper and closes, Space sets it and stays open to try another, R sets
-// a random one, Escape closes. A click selects a thumbnail, a double click sets
-// it, the wheel scrolls the strip.
+// The wallpaper picker: a strip of the wallpapers with the selected one big in
+// the middle. Left and Right (or H and L) move, Home and End jump, Enter sets
+// the selected wallpaper and closes, R sets a random one, Escape closes. A
+// click selects a wallpaper, a click on the selected one sets it, the wheel
+// moves along.
 Item {
     id: root
 
@@ -17,18 +17,18 @@ Item {
     readonly property string error: state?.error ?? ""
     readonly property var selected: wallpapers[strip.currentIndex] ?? null
 
-    readonly property int previewWidth: 640
-    readonly property int previewHeight: 360
-    readonly property int thumbWidth: 112
-    readonly property int thumbHeight: 63
+    // 16:9, the selected one twice the size of the others.
+    readonly property int bigWidth: 320
+    readonly property int bigHeight: 180
+    readonly property int smallWidth: 160
+    readonly property int stripWidth: 720
 
-    implicitWidth: previewWidth + Theme.padding * 2
+    implicitWidth: stripWidth + Theme.padding * 2
     implicitHeight: column.implicitHeight + Theme.spaceSmall * 2
 
     focus: true
 
-    // Starts on the wallpaper that's set, and stays in range when the folder
-    // changes.
+    // On the wallpaper that's set, or the first.
     function selectCurrent(): void {
         const at = wallpapers.findIndex(wallpaper => wallpaper.path === current);
         strip.currentIndex = at >= 0 ? at : 0;
@@ -41,14 +41,11 @@ Item {
         strip.currentIndex = Math.max(0, Math.min(wallpapers.length - 1, strip.currentIndex + by));
     }
 
-    function apply(close: bool): void {
+    function apply(): void {
         if (!selected)
             return;
         Daemon.command("wallpaper", "set", [selected.path]);
-        if (close)
-            Daemon.event("dismiss");
-        else
-            light.flash();
+        Daemon.event("dismiss");
     }
 
     onWallpapersChanged: {
@@ -56,7 +53,7 @@ Item {
             selectCurrent();
     }
 
-    // Follows the wallpaper set, from here (Space, R) or from elsewhere.
+    // Follows a wallpaper set from elsewhere, like R.
     onCurrentChanged: selectCurrent()
 
     // The view is preloaded and kept, so each opening starts again on the
@@ -76,8 +73,8 @@ Item {
     Keys.onLeftPressed: move(-1)
     Keys.onRightPressed: move(1)
     Keys.onEscapePressed: Daemon.event("dismiss")
-    Keys.onReturnPressed: apply(true)
-    Keys.onEnterPressed: apply(true)
+    Keys.onReturnPressed: apply()
+    Keys.onEnterPressed: apply()
     Keys.onPressed: event => {
         if (event.key === Qt.Key_H)
             move(-1);
@@ -87,8 +84,6 @@ Item {
             move(-wallpapers.length);
         else if (event.key === Qt.Key_End)
             move(wallpapers.length);
-        else if (event.key === Qt.Key_Space)
-            apply(false);
         else if (event.key === Qt.Key_R)
             Daemon.command("wallpaper", "random", []);
         else
@@ -96,18 +91,12 @@ Item {
         event.accepted = true;
     }
 
-    EdgeLight {
-        id: light
-
-        radius: Theme.radiusSurface
-    }
-
     Column {
         id: column
 
         x: Theme.padding
         y: Theme.spaceSmall
-        width: root.previewWidth
+        width: root.stripWidth
         spacing: Theme.spaceMedium
 
         PanelHeader {
@@ -131,17 +120,9 @@ Item {
             }
         }
 
-        // The selected wallpaper, big.
         Item {
-            width: root.previewWidth
-            height: root.previewHeight
-
-            RoundedImage {
-                anchors.fill: parent
-                visible: root.selected !== null
-                path: root.selected?.path ?? ""
-                radius: Theme.radiusSurface
-            }
+            width: root.stripWidth
+            height: root.bigHeight + 8
 
             Column {
                 anchors.centerIn: parent
@@ -164,155 +145,148 @@ Item {
                 }
             }
 
-            // The one that's set now.
-            Rectangle {
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.margins: Theme.spaceMedium
-                visible: root.selected !== null && root.selected.path === root.current
-                width: badge.implicitWidth + Theme.spaceMedium * 2
-                height: 24
-                radius: height / 2
-                color: Theme.accent
+            // The selected wallpaper stays in the middle; the strip slides.
+            ListView {
+                id: strip
 
-                Row {
-                    id: badge
+                anchors.fill: parent
+                orientation: ListView.Horizontal
+                spacing: Theme.spaceMedium
+                clip: true
+                model: root.wallpapers
+                highlightRangeMode: ListView.StrictlyEnforceRange
+                preferredHighlightBegin: (width - root.bigWidth) / 2
+                preferredHighlightEnd: (width + root.bigWidth) / 2
+                highlightMoveDuration: Theme.reducedMotion ? 0 : 220
+                boundsBehavior: Flickable.StopAtBounds
+                interactive: false
 
-                    anchors.centerIn: parent
-                    spacing: Theme.spaceTiny
-
-                    Symbol {
-                        anchors.verticalCenter: parent.verticalCenter
-                        name: "check"
-                        size: 14
-                        color: Theme.onAccent
-                    }
-
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: "Current"
-                        color: Theme.onAccent
-                        font.pixelSize: Theme.textCaption
-                        font.family: Theme.fontFamily
-                        font.weight: Theme.weightLabel
-                    }
+                ScrollFade {
+                    view: strip
+                    horizontal: true
                 }
-            }
 
-            // Arrows on the sides, for the mouse.
-            IconButton {
-                anchors.left: parent.left
-                anchors.leftMargin: Theme.spaceSmall
-                anchors.verticalCenter: parent.verticalCenter
-                visible: root.wallpapers.length > 1 && strip.currentIndex > 0
-                icon: "chevron_left"
-                size: 24
-                onClicked: root.move(-1)
-            }
+                delegate: Item {
+                    id: thumb
 
-            IconButton {
-                anchors.right: parent.right
-                anchors.rightMargin: Theme.spaceSmall
-                anchors.verticalCenter: parent.verticalCenter
-                visible: root.wallpapers.length > 1 && strip.currentIndex < root.wallpapers.length - 1
-                icon: "chevron_right"
-                size: 24
-                onClicked: root.move(1)
-            }
-        }
+                    required property var modelData
+                    required property int index
+                    readonly property bool selected: ListView.isCurrentItem
+                    readonly property bool isCurrent: modelData.path === root.current
 
-        // Every wallpaper, small.
-        ListView {
-            id: strip
+                    width: selected ? root.bigWidth : root.smallWidth
+                    height: strip.height
 
-            width: root.previewWidth
-            height: root.thumbHeight + 8
-            orientation: ListView.Horizontal
-            spacing: Theme.spaceSmall
-            clip: true
-            model: root.wallpapers
-            boundsBehavior: Flickable.StopAtBounds
-            highlightFollowsCurrentItem: false
-            onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
-
-            ScrollFade {
-                view: strip
-                horizontal: true
-            }
-
-            delegate: Item {
-                id: thumb
-
-                required property var modelData
-                required property int index
-                readonly property bool selected: ListView.isCurrentItem
-                readonly property bool isCurrent: modelData.path === root.current
-
-                width: root.thumbWidth
-                height: root.thumbHeight + 8
-
-                RoundedImage {
-                    x: 0
-                    y: 4
-                    width: root.thumbWidth
-                    height: root.thumbHeight
-                    path: thumb.modelData.path
-                    radius: Theme.radiusControl
-                    opacity: thumb.selected || area.containsMouse ? 1 : 0.6
-
-                    Behavior on opacity {
+                    Behavior on width {
                         NumberAnimation {
-                            duration: Theme.fast
+                            duration: Theme.reducedMotion ? 0 : 220
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+
+                    RoundedImage {
+                        id: image
+
+                        anchors.centerIn: parent
+                        width: thumb.width
+                        height: thumb.width * 9 / 16
+                        path: thumb.modelData.path
+                        radius: thumb.selected ? Theme.radiusSurface : Theme.radiusControl
+                        opacity: thumb.selected ? 1 : area.containsMouse ? 0.85 : 0.55
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.fast
+                            }
+                        }
+                    }
+
+                    // The selection.
+                    Rectangle {
+                        anchors.centerIn: image
+                        width: image.width + 6
+                        height: image.height + 6
+                        radius: image.radius + 3
+                        color: "transparent"
+                        border.width: 2
+                        border.color: Theme.accent
+                        visible: thumb.selected
+                    }
+
+                    // The one that's set now: a badge when selected, a dot otherwise.
+                    Rectangle {
+                        anchors.top: image.top
+                        anchors.left: image.left
+                        anchors.margins: Theme.spaceSmall
+                        visible: thumb.isCurrent && thumb.selected
+                        width: badge.implicitWidth + Theme.spaceMedium * 2
+                        height: 22
+                        radius: height / 2
+                        color: Theme.accent
+
+                        Row {
+                            id: badge
+
+                            anchors.centerIn: parent
+                            spacing: Theme.spaceTiny
+
+                            Symbol {
+                                anchors.verticalCenter: parent.verticalCenter
+                                name: "check"
+                                size: 13
+                                color: Theme.onAccent
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Current"
+                                color: Theme.onAccent
+                                font.pixelSize: Theme.textCaption
+                                font.family: Theme.fontFamily
+                                font.weight: Theme.weightLabel
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.right: image.right
+                        anchors.bottom: image.bottom
+                        anchors.margins: Theme.spaceSmall
+                        visible: thumb.isCurrent && !thumb.selected
+                        width: 8
+                        height: 8
+                        radius: 4
+                        color: Theme.accent
+                        border.width: 1
+                        border.color: Theme.onAccent
+                    }
+
+                    MouseArea {
+                        id: area
+
+                        anchors.fill: image
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (thumb.selected)
+                                root.apply();
+                            else
+                                strip.currentIndex = thumb.index;
                         }
                     }
                 }
 
-                // The selection.
-                Rectangle {
-                    x: -2
-                    y: 2
-                    width: root.thumbWidth + 4
-                    height: root.thumbHeight + 4
-                    radius: Theme.radiusControl + 2
-                    color: "transparent"
-                    border.width: 2
-                    border.color: Theme.accent
-                    visible: thumb.selected
-                }
+                // The wheel moves one wallpaper per step.
+                WheelHandler {
+                    property real gathered: 0
 
-                // A dot on the one that's set now.
-                Rectangle {
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    anchors.margins: Theme.spaceSmall + 4
-                    visible: thumb.isCurrent
-                    width: 8
-                    height: 8
-                    radius: 4
-                    color: Theme.accent
-                    border.width: 1
-                    border.color: Theme.onAccent
-                }
-
-                MouseArea {
-                    id: area
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: strip.currentIndex = thumb.index
-                    onDoubleClicked: {
-                        strip.currentIndex = thumb.index;
-                        root.apply(true);
+                    onWheel: event => {
+                        gathered += event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                        while (Math.abs(gathered) >= 120) {
+                            root.move(gathered > 0 ? -1 : 1);
+                            gathered -= gathered > 0 ? 120 : -120;
+                        }
                     }
-                }
-            }
-
-            // The wheel scrolls sideways.
-            WheelHandler {
-                onWheel: event => {
-                    const delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
-                    strip.contentX = Math.max(0, Math.min(strip.contentWidth - strip.width, strip.contentX - delta));
                 }
             }
         }
@@ -340,7 +314,7 @@ Item {
 
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                text: "←→ browse · Enter set · Space try · R random"
+                text: "←→ browse · Enter set · R random · Esc close"
                 color: Theme.muted
                 font.pixelSize: Theme.textCaption
                 font.family: Theme.fontFamily

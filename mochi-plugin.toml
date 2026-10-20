@@ -1,6 +1,6 @@
-# A wallpaper picker on the island. `mochi ipc wallpaper toggle` opens it: a big
-# preview of the selected wallpaper and a strip of the others, picked with the
-# arrows or the mouse. It sets the wallpaper with whichever daemon runs (awww,
+# A wallpaper picker on the island. `mochi ipc wallpaper toggle` opens it: a strip
+# of the wallpapers with the selected one big in the middle, picked with the arrows
+# or the mouse. It sets the wallpaper with whichever daemon runs (awww,
 # swww, hyprpaper, swaybg, or a command of your own), and sets the last one
 # again when Mochi starts.
 

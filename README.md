@@ -1,7 +1,7 @@
 # mochi-wallpaper-selector
 
 A [Mochi](https://github.com/DavidutzDev/mochi) plugin to pick a wallpaper on the
-island: a big preview of the selected wallpaper and a strip of all the others.
+island: a strip of your wallpapers with the selected one big in the middle.
 
 It sets the wallpaper with the daemon that runs (awww, swww, hyprpaper or swaybg)
 or a command of your own, remembers the last one, and sets it again when Mochi
@@ -14,11 +14,11 @@ starts.
 | Left, Right, H, L | Select the previous or next wallpaper |
 | Home, End | Jump to the first or last |
 | Enter | Set the selected wallpaper and close |
-| Space | Set it and stay open, to try another |
 | R | Set a random one |
 | Escape | Close |
 
-With the mouse: a click selects, a double click sets, the wheel scrolls the strip.
+With the mouse: a click selects a wallpaper, a click on the selected one sets it,
+the wheel moves along.
 
 ## Install
 
