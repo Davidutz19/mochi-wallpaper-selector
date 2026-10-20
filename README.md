@@ -3,9 +3,69 @@
 A [Mochi](https://github.com/DavidutzDev/mochi) plugin to pick a wallpaper on the
 island: a strip of your wallpapers with the selected one big in the middle.
 
+![The picker on the island](docs/preview.webp)
+
 It sets the wallpaper with the daemon that runs (awww, swww, hyprpaper or swaybg)
 or a command of your own, remembers the last one, and sets it again when Mochi
 starts.
+
+## Install
+
+It needs Mochi 0.4.1 or newer, and a wallpaper daemon, or a command that sets one.
+
+From Bento, Mochi's registry:
+
+```sh
+mochi bento add wallpaper
+```
+
+Or from this repository, in `~/.config/mochi/plugins.toml`, then
+`mochi plugins install wallpaper`:
+
+```toml
+[plugins.wallpaper]
+source = "git-release:github.com/DavidutzDev/mochi-wallpaper-selector"
+```
+
+`git-release:` downloads a release's static binary, so there is nothing to build;
+`git:` builds it from source with cargo, or with Nix when cargo isn't there.
+
+### With Nix
+
+With home-manager's Mochi module, Nix builds it during the switch:
+
+```nix
+# flake.nix
+inputs.mochi-wallpaper-selector = {
+  url = "github:DavidutzDev/mochi-wallpaper-selector";
+  flake = false;
+};
+
+# home-manager
+programs.mochi = {
+  plugins.wallpaper.src = inputs.mochi-wallpaper-selector;
+  settings.modules = [ "wallpaper" ];
+  settings.module.wallpaper.daemon = "awww";
+};
+```
+
+The repository is a flake too: `nix build github:DavidutzDev/mochi-wallpaper-selector`
+builds the plugin, and its `packages.<system>.default` goes in
+`programs.mochi.plugins.wallpaper.package`.
+
+### Then
+
+Add `"wallpaper"` to `modules` in `config.toml`, unless Bento or home-manager did,
+and bind a key to open the picker:
+
+```sh
+mochi ipc wallpaper toggle
+```
+
+```lua
+-- Hyprland
+hl.bind("SUPER + CTRL + W", hl.dsp.exec_cmd("mochi ipc wallpaper toggle"))
+```
 
 ## Keys
 
@@ -20,34 +80,10 @@ starts.
 With the mouse: a click selects a wallpaper, a click on the selected one sets it,
 the wheel moves along.
 
-## Install
-
-```toml
-# ~/.config/mochi/plugins.toml
-[plugins.wallpaper]
-source = "git:github.com/DavidutzDev/mochi-wallpaper-selector"
-```
-
-```sh
-mochi plugins install wallpaper
-```
-
-With home-manager, Nix builds it during the switch:
-
-```nix
-programs.mochi.plugins.wallpaper.src = inputs.mochi-wallpaper-selector;
-```
-
-Then add `"wallpaper"` to `modules` in `config.toml`, and bind a key:
-
-```sh
-mochi ipc wallpaper toggle
-```
-
 ## Settings
 
-`settings.toml` lists them, commented at their defaults, for the `[module.wallpaper]`
-section of `config.toml`:
+In the `[module.wallpaper]` section of `config.toml`, or on the plugin's page in
+Mochi's settings. `settings.toml` lists them, commented at their defaults:
 
 | Setting | Default | |
 |---|---|---|
@@ -64,7 +100,7 @@ The last wallpaper is saved in `$XDG_STATE_HOME/mochi-wallpaper/current`
 
 ## Actions
 
-`mochi ipc wallpaper <action>`:
+`mochi ipc wallpaper <action>`, for keys and scripts:
 
 | Action | Does |
 |---|---|
@@ -77,10 +113,18 @@ The last wallpaper is saved in `$XDG_STATE_HOME/mochi-wallpaper/current`
 ## Development
 
 ```sh
+nix develop          # or have cargo and rustc
 cargo test
 cargo clippy --all-targets -- -D warnings
 ```
 
-To try changes, list the plugin with a `path:` source and run
-`mochi plugins install wallpaper`; views reload as you save them, and
-`mochi reload` restarts the backend after a rebuild.
+To try changes, list the plugin with a `path:` source in `plugins.toml` and run
+`mochi plugins install wallpaper`. `mochi reload` restarts the backend after a
+rebuild; QML changes to an installed copy need `systemctl --user restart mochid`.
+
+Pushing a tag like `v0.2.0` builds static binaries for x86_64 and aarch64 and
+attaches them to the release (`.github/workflows/release.yml`).
+
+## License
+
+MIT
