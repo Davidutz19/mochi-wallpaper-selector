@@ -10,7 +10,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     mochi = {
-      url = "github:DavidutzDev/mochi";
+      url = "github:Davidutz19/mochi";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

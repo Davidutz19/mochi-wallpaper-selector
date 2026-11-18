@@ -56,7 +56,7 @@ dependencies = [
 [[package]]
 name = "mochi-protocol"
 version = "0.4.1"
-source = "git+https://github.com/DavidutzDev/mochi?tag=v0.4.1#e45643a9f8003e774bb34baddf492e4f6334fe84"
+source = "git+https://github.com/Davidutz19/mochi?tag=v0.4.1#786613ab5ad8d7302bc5661a38bc7b72fe7d3d8e"
 dependencies = [
  "schemars",
  "serde",
@@ -67,7 +67,7 @@ dependencies = [
 [[package]]
 name = "mochi-sdk"
 version = "0.4.1"
-source = "git+https://github.com/DavidutzDev/mochi?tag=v0.4.1#e45643a9f8003e774bb34baddf492e4f6334fe84"
+source = "git+https://github.com/Davidutz19/mochi?tag=v0.4.1#786613ab5ad8d7302bc5661a38bc7b72fe7d3d8e"
 dependencies = [
  "mochi-protocol",
  "serde",
@@ -77,7 +77,7 @@ dependencies = [
 
 [[package]]
 name = "mochi-wallpaper-selector"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "mochi-sdk",
  "serde",

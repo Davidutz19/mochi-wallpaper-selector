@@ -1,7 +1,7 @@
 [package]
 name = "mochi-wallpaper-selector"
 description = "A Mochi plugin: pick a wallpaper on the island"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 license = "MIT"
 publish = false
@@ -11,6 +11,6 @@ name = "wallpaper-selector"
 path = "src/main.rs"
 
 [dependencies]
-mochi-sdk = { git = "https://github.com/DavidutzDev/mochi", tag = "v0.4.1" }
+mochi-sdk = { git = "https://github.com/Davidutz19/mochi", tag = "v0.4.1" }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["macros", "process", "time"] }

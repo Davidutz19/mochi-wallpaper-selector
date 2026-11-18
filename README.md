@@ -1,6 +1,6 @@
 # mochi-wallpaper-selector
 
-A [Mochi](https://github.com/DavidutzDev/mochi) plugin to pick a wallpaper on the
+A [Mochi](https://github.com/Davidutz19/mochi) plugin to pick a wallpaper on the
 island: a strip of your wallpapers with the selected one big in the middle.
 
 ![The picker on the island](docs/preview.webp)
@@ -26,7 +26,7 @@ Or from this repository, in `~/.config/mochi/plugins.toml`, then
 
 ```toml
 [plugins.wallpaper-selector]
-source = "git-release:github.com/DavidutzDev/mochi-wallpaper-selector"
+source = "git-release:github.com/Davidutz19/mochi-wallpaper-selector"
 ```
 
 `git-release:` downloads a release's static binary, so there is nothing to build;
@@ -39,7 +39,7 @@ With home-manager's Mochi module, Nix builds it during the switch:
 ```nix
 # flake.nix
 inputs.mochi-wallpaper-selector = {
-  url = "github:DavidutzDev/mochi-wallpaper-selector";
+  url = "github:Davidutz19/mochi-wallpaper-selector";
   flake = false;
 };
 
@@ -51,7 +51,7 @@ programs.mochi = {
 };
 ```
 
-The repository is a flake too: `nix build github:DavidutzDev/mochi-wallpaper-selector`
+The repository is a flake too: `nix build github:Davidutz19/mochi-wallpaper-selector`
 builds the plugin, and its `packages.<system>.default` goes in
 `programs.mochi.plugins.wallpaper-selector.package`.
 

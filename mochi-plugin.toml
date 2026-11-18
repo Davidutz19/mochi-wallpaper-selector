@@ -7,10 +7,10 @@
 [plugin]
 id = "wallpaper-selector"
 name = "Wallpaper selector"
-version = "0.1.0"
+version = "0.1.1"
 description = "Pick a wallpaper on the island, for awww, swww, hyprpaper, swaybg or any command"
 authors = ["David Gheghea"]
-homepage = "https://github.com/DavidutzDev/mochi-wallpaper-selector"
+homepage = "https://github.com/Davidutz19/mochi-wallpaper-selector"
 api = 1
 
 [backend]

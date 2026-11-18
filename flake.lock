@@ -8,15 +8,15 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1791916862,
-        "narHash": "sha256-EdBrPFPml2Gac6jHzJRBGgMfUC/10B8JXMNK3VWgvzU=",
-        "owner": "DavidutzDev",
+        "lastModified": 1795037669,
+        "narHash": "sha256-tA9xxSR+NRF26VgRlQjEJ6HL5wmKQlcWdwPuxfVOGVY=",
+        "owner": "Davidutz19",
         "repo": "mochi",
-        "rev": "20d15ec5079063312d7b88c56d39dc2666cff206",
+        "rev": "347b959f65c8022e36db162822a40e8f6b88e378",
         "type": "github"
       },
       "original": {
-        "owner": "DavidutzDev",
+        "owner": "Davidutz19",
         "repo": "mochi",
         "type": "github"
       }

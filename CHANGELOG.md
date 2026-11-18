@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+The plugin moved to github.com/Davidutz19/mochi-wallpaper-selector, and builds
+against Mochi there.
+
 ## 0.1.0
 
 The first release.
